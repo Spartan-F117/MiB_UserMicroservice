@@ -40,3 +40,49 @@ paths:
           description: user ok
         '201':
           description: invalid credential
+
+  /create_user:
+    post:
+      tags: [ User ]
+      summary: create
+      operationId: mib.resource.users.create_user
+      requestBody:
+        description: create a new user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - firstname
+                - lastname
+                - date_of_birth
+                - password
+                - nickname
+                - location
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@studenti.unipi.it
+                password:
+                  type: string
+                  example: abcd123A
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                date_of_birth:
+                  type: string
+                nickname:
+                  type: string
+                location:
+                  type: string
+      description: |
+        register a new user
+      responses:
+        201:
+          description: user created successfully, redirects to users page
+        203:
+          description: redirects to create_user page (if email is already registered, or nickname is not available)

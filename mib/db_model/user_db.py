@@ -30,15 +30,35 @@ class User(db.Model):
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
+    def set_birthday(self, date_of_birth):
+        self.date_of_birth = date_of_birth
+
+    def set_location(self, location):
+        self.location = location
+
+    def set_email(self, email):
+        self.email = email
+
+    def set_firstname(self, firstname):
+        self.firstname = firstname
+
+    def set_lastname(self, lastname):
+        self.lastname = lastname
+
+    def set_nickname(self,nickname):
+        self.nickname = nickname
+
+
     @property
     def is_authenticated(self):
-        return self._authenticated
+        return self.authenticated
 
     # return true is the user is authenticated
     def authenticate(self, password):
         checked = check_password_hash(self.password, password)
-        self._authenticated = checked
-        return self._authenticated
+        self.authenticated = checked
+        self.is_active = checked
+        return self.authenticated
 
     # Return the user id
     def get_id(self):
