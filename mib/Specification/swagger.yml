@@ -1,0 +1,42 @@
+openapi: 3.0.1
+
+info:
+  title: User Service API
+  description: User Microservice of Message in a Bottle Application
+  version: 0.2-oas3
+
+servers:
+  - url: /
+
+paths:
+  /authenticate:
+    post:
+      tags: [ User ]
+      summary: login part
+      operationId: mib.resource.users.login
+      requestBody:
+        description: log the user
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: payload
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@studenti.unipi.it
+                password:
+                  type: string
+                  example: abcd123A
+      description: |
+        log in the user specified in the payload
+      responses:
+        '200':
+          description: user ok
+        '201':
+          description: invalid credential
