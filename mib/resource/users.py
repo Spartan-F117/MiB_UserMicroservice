@@ -1,6 +1,6 @@
 import json
 from mib.db_model.user_db import User
-import jsonify
+from flask import jsonify
 
 def check_none(**kwargs):
     for name, arg in zip(kwargs.keys(), kwargs.values()):
@@ -14,7 +14,7 @@ def login(payload):
     print("password:" + payload["password"])
 
     check_none(email=payload['email'])
-    user_q = User.query.filter(User.email == payload['email']).first()
+    user_q = User.query.filter(User.email == str(payload['email'])).first()
 
     # create response template
     response = {
