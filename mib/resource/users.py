@@ -107,3 +107,18 @@ def create_user():
     response["user"] = user.serialize()
 
     return jsonify(response), 201
+
+def delete_user():
+    print("userMicroservice - create_user function ")
+
+    response = {
+        'response': 'user not logged',
+        'user': None
+    }
+
+    # query = db.session.query(User).filter(User.id == current_user.id)
+    # query.first().is_deleted=True
+    # db.session.commit()
+    # logout_user()
+
+    return jsonify(response), 201

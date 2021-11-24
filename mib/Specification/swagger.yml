@@ -86,3 +86,40 @@ paths:
           description: user created successfully, redirects to users page
         203:
           description: redirects to create_user page (if email is already registered, or nickname is not available)
+
+  /delete_user:
+    get:
+      tags:
+        - Users
+      summary: show page for delete a user
+      responses:
+        201:
+          description: the user is correctly logged and it's able to delete the account. Will redirect to delete.html page
+        400:
+          description: the user is not logged. Wil lredirect to login page
+    post:
+      tags: [ User ]
+      summary: create
+      operationId: mib.resource.users.delete_user
+      requestBody:
+        description: delete a user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - password
+              properties:
+                user_id:
+                  type: string
+                password:
+                  type: string
+      description: |
+        delete a user
+      responses:
+        201:
+          description: password and user_id are valid
+        301:
+          description: invalid password or user_id, or user not logged.
