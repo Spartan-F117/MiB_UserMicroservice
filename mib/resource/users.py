@@ -123,7 +123,7 @@ def delete_user():
     user_logged = User.query.filter(User.is_active == True).first()
     if user_logged is not None:
         print("User logged")
-        response['response'] = ['user logged']
+        response['response'] = ['user logged successfully']
         return jsonify(response), 200
 
     if delete == 'True':
