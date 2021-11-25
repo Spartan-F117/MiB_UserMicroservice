@@ -1,6 +1,6 @@
 import json
 from mib.db_model.user_db import User
-from flask import jsonify, request
+from flask import jsonify, request, logout_user
 import datetime
 from datetime import datetime
 from mib import db
@@ -110,15 +110,26 @@ def create_user():
 
 def delete_user():
     print("userMicroservice - create_user function ")
+    post_data = request.get_json()
+    user = post_data.get('user')
+    delete = post_data.get('delete')
 
     response = {
         'response': 'user not logged',
         'user': None
     }
+    response_code = 400
 
-    # query = db.session.query(User).filter(User.id == current_user.id)
-    # query.first().is_deleted=True
-    # db.session.commit()
-    # logout_user()
+    user_logged = User.query.filter(User.is_active == True).first()
+    if user_logged is not None:
+        print("User logged")
+        response['response'] = ['user logged']
+        return jsonify(response), 200
 
-    return jsonify(response), 201
+    if delete == 'True':
+        query = db.session.query(User).filter(User.id == user.id)
+        query.first().is_deleted=True
+        db.session.commit()
+        logout_user()
+
+    return jsonify(response), response_code

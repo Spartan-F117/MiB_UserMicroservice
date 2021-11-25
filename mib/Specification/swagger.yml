@@ -93,7 +93,7 @@ paths:
         - Users
       summary: show page for delete a user
       responses:
-        201:
+        200:
           description: the user is correctly logged and it's able to delete the account. Will redirect to delete.html page
         400:
           description: the user is not logged. Wil lredirect to login page
@@ -108,14 +108,14 @@ paths:
           application/json:
             schema:
               type: object
-              required:
-                - user_id
-                - password
               properties:
-                user_id:
+                user:
                   type: string
-                password:
+                delete:
                   type: string
+              required:
+                - user
+                - delete
       description: |
         delete a user
       responses:
