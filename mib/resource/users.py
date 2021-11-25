@@ -4,7 +4,8 @@ from flask import jsonify, request
 import datetime
 from datetime import datetime
 from mib import db
-from datetime import date
+
+
 def check_none(**kwargs):
     for name, arg in zip(kwargs.keys(), kwargs.values()):
         if arg is None:
@@ -106,4 +107,14 @@ def create_user():
     response["response"] = "user created"
     response["user"] = user.serialize()
 
+    return jsonify(response), 201
+
+
+def show_users():
+    post_data = request.get_json()
+    id_user = post_data.get('id')
+    _users = db.session.query(User).filter(User.is_deleted == False).filter(User.id != id_user)
+    response = {
+        'list_users': _users
+    }
     return jsonify(response), 201

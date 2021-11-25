@@ -9,6 +9,71 @@ servers:
   - url: /
 
 paths:
+  /user/{user_id}:
+    get:
+      tags: [ User ]
+      description: Get a user by its id
+      operationId: mib.resource.util_fun.get_user
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+    delete:
+      tags: [ User ]
+      description: Delete a user by its id
+      operationId: mib.resource.util_fun.delete_user
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        202:
+          description: User deleted
+        404:
+          description: User not found
+        default:
+          description: An error occured during the deletion the user
+
+  /user_email/{user_email}:
+    get:
+      tags: [ User ]
+      description: Get a user by its email
+      operationId: mib.resource.util_fun.get_user_by_email
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+
+
+
+
+
+
   /authenticate:
     post:
       tags: [ User ]
@@ -86,3 +151,28 @@ paths:
           description: user created successfully, redirects to users page
         203:
           description: redirects to create_user page (if email is already registered, or nickname is not available)
+
+  /show_users:
+    post:
+      tags: [ User ]
+      summary: show users
+      operationId: mib.resource.users.show_users
+      requestBody:
+        description: take in input the id of requester and give the complete list of user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+      description: |
+        take in input the id of requester and give the complete list of user
+      responses:
+        201:
+          description: list retrived correctly
+        303:
+          description: user list not available
