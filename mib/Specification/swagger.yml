@@ -86,3 +86,69 @@ paths:
           description: user created successfully, redirects to users page
         203:
           description: redirects to create_user page (if email is already registered, or nickname is not available)
+
+  /profile_filter:
+      get:
+        tags: [ User ]
+        summary: show user filter
+        operationId: mib.resource.users.profile_filter
+        responses:
+          201:
+            description: show filter
+
+  /change_filter:
+    post:
+      tags: [ User ]
+      summary: change filter
+      operationId: mib.resource.users.change_filter
+      requestBody:
+        description: change user filter
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - filter
+              properties:
+                filter:
+                  type: string
+      description: |
+        change user filter
+      responses:
+        203:
+          description: filter update successfully, redirects to profile page
+
+  /change_info:
+    post:
+      tags: [ User ]
+      summary: change info
+      operationId: mib.resource.users.change_info
+      requestBody:
+        description: change user info
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                date_of_birth:
+                  type: string
+                new_password:
+                  type: string
+                old_password:
+                  type: string
+                location:
+                  type: string
+      description: |
+        change user info
+      responses:
+        201:
+          description: info update successfully, redirects to profile page
+        202:
+          description: info not updated, wrongo password, redirects to profile page
+        
