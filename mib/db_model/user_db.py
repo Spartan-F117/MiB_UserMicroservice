@@ -66,3 +66,8 @@ class User(db.Model):
 
     def serialize(self):
         return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+
+class Filter_list(db.Model):
+    __tablename__ = 'filter'
+    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    list = db.Column(db.Unicode(128), nullable=True)
