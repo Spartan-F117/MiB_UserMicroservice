@@ -177,14 +177,22 @@ paths:
         303:
           description: user list not available
 
-  /profile_filter:
-      get:
-        tags: [ User ]
-        summary: show user filter
-        operationId: mib.resource.users.profile_filter
-        responses:
-          201:
-            description: show filter
+  /profile_filter/{user_id}:
+    get:
+      tags: [ User ]
+      summary: show user filter
+      operationId: mib.resource.users.profile_filter
+      parameters:
+        - name: user_id
+          description: user id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        201:
+          description: show filter
 
   /change_filter:
     post:

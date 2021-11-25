@@ -1,5 +1,5 @@
 import json
-from mib.db_model.user_db import User
+from mib.db_model.user_db import User, Filter_list
 from flask import jsonify, request
 import datetime
 from datetime import datetime
@@ -41,7 +41,9 @@ def login(payload):
     if user_q and user_q.authenticate(payload['password']):
         response['authentication'] = 'success'
         response['user'] = user_q.serialize()
+        print(response['user'])
         response_code = 200
+        print("authenticate ok")
 
     return jsonify(response), response_code
 
@@ -120,9 +122,11 @@ def show_users():
     }
     return jsonify(response), 201
 
-def profile_filter(payload):
+def profile_filter(user_id: int):
 
-    user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==payload['user_id'])
+    post_data = request.get_json()
+
+    user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==user_id)
     response = {
         'response': 'info sent',
         'filter': ''
@@ -132,45 +136,45 @@ def profile_filter(payload):
     return jsonify(response), 201
 
 
-def change_filter(payload):
+def change_filter():
 
     post_data = request.get_json()
 
     print("change filter branch")
     new_filter = Filter_list()
-    new_filter.list = request.post_data.get('filter')
-    new_filter.user_id = payload['user_id']
-    user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==payload['user_id'])
+    new_filter.list = post_data.get('filter')
+    new_filter.user_id = post_data.get('user_id')
+    user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==post_data.get('user_id'))
     if user_filter_list.first() is not None:
-        db.session.query(Filter_list).filter(Filter_list.user_id==payload['user_id']).delete()
+        db.session.query(Filter_list).filter(Filter_list.user_id==post_data.get('user_id')).delete()
         db.session.add(new_filter)
     else:
         db.session.add(new_filter)
     db.session.commit()
     response = {
         'response': 'filter updated',
-        'filter': request.post_data.get('filter')
+        'filter': post_data.get('filter')
     }
     return jsonify(response), 203
 
 
-def change_info(payload):
+def change_info():
 
     post_data = request.get_json()
 
     print("change info branch")
-    user_q = User.query.filter(User.email == str(payload['email'])).first()
-    if check_password_hash(user_q.password, request.post_data.get('old_password')) : #check if the password that is put in the form is corrected
-        user_to_modify = db.session.query(User).filter(User.id==payload['user_id']).first()
-        user_to_modify.firstname = request.post_data.get('firstname')
-        user_to_modify.lastname = request.post_data.get('surname')
-        user_to_modify.date_of_birth = datetime.datetime.fromisoformat(request.post_data.get('birthday'))
-        user_to_modify.location = request.post_data.get('location')
-        if request.post_data.get('new_password'):
-            user_to_modify.password = generate_password_hash(request.post_data.get('new_password'))
+    user_q = User.query.filter(User.email == post_data.get('user_id')).first()
+    if check_password_hash(user_q.password, post_data.get('old_password')) : #check if the password that is put in the form is corrected
+        user_to_modify = db.session.query(User).filter(User.id==post_data.get('user_id')).first()
+        user_to_modify.firstname = post_data.get('firstname')
+        user_to_modify.lastname = post_data.get('surname')
+        user_to_modify.date_of_birth = datetime.datetime.fromisoformat(post_data.get('birthday'))
+        user_to_modify.location = post_data.get('location')
+        if post_data.get('new_password'):
+            user_to_modify.password = generate_password_hash(post_data.get('new_password'))
         db.session.commit()
         print("info changed")
-        user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==payload['user_id'])
+        user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==post_data.get('user_id'))
         if user_filter_list.first() is not None:
             response = {
                 'response': 'info changed',
@@ -184,7 +188,7 @@ def change_info(payload):
         return jsonify(response), 201
     else:
         print("old password incorrect")
-        user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==payload['user_id'])
+        user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==post_data.get('user_id'))
         if user_filter_list.first() is not None:
             response = {
                 'response': 'info not changed',
