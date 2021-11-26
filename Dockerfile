@@ -16,7 +16,7 @@ WORKDIR /app
 RUN ["pip", "install", "-r", "requirements.prod.txt"]
 
 # exposing the port
-EXPOSE 5002/tcp
+EXPOSE 5000/tcp
 
 # Main command
 CMD ["gunicorn", "--config", "gunicorn.conf.py", "wsgi:app"]
