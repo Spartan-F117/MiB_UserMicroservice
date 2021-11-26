@@ -122,6 +122,7 @@ def show_users():
     }
     return jsonify(response), 201
 
+
 def profile_filter(user_id: int):
 
     post_data = request.get_json()
@@ -163,14 +164,18 @@ def change_info():
     post_data = request.get_json()
 
     print("change info branch")
-    user_q = User.query.filter(User.email == post_data.get('user_id')).first()
+    user_q = User.query.filter(User.id == post_data.get('user_id')).first()
     if check_password_hash(user_q.password, post_data.get('old_password')) : #check if the password that is put in the form is corrected
         user_to_modify = db.session.query(User).filter(User.id==post_data.get('user_id')).first()
-        user_to_modify.firstname = post_data.get('firstname')
-        user_to_modify.lastname = post_data.get('surname')
-        user_to_modify.date_of_birth = datetime.datetime.fromisoformat(post_data.get('birthday'))
-        user_to_modify.location = post_data.get('location')
-        if post_data.get('new_password'):
+        if post_data.get('firstname') is not '':
+            user_to_modify.firstname = post_data.get('firstname')
+        if post_data.get('surname') is not '':
+            user_to_modify.lastname = post_data.get('surname')
+        if post_data.get('birthday') is not '':
+            user_to_modify.date_of_birth = datetime.fromisoformat(post_data.get('birthday'))
+        if post_data.get('location') is not '':
+            user_to_modify.location = post_data.get('location')
+        if post_data.get('new_password') is not '':
             user_to_modify.password = generate_password_hash(post_data.get('new_password'))
         db.session.commit()
         print("info changed")
