@@ -5,7 +5,7 @@ class User(db.Model):
     __tablename__ = 'User'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'email', 'firstname', 'lastname', 'nickname', 'date_of_birth', 'location', 'is_active', 'authenticated', 'is_anonymous']
+    SERIALIZE_LIST = ['id', 'email', 'firstname', 'lastname', 'nickname', 'date_of_birth', 'location', 'is_active', 'authenticated', 'is_anonymous','is_admin']
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)    # Create unique id for the user
     email = db.Column(db.Unicode(128), nullable=False)                  # Create email for the user

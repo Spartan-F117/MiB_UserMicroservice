@@ -199,32 +199,34 @@ paths:
           description: added to blacklist correctly
         303:
           description: user not added
-    delete:
+  /delete_blacklist:
+    post:
       tags: [ User ]
-        summary: remove user from blacklist
-        operationId: mib.resource.users.remove_blacklist
-        requestBody:
-          description: remove user in a blacklist
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - id_owner
-                  - id_to_insert
-                properties:
-                  id_owner:
-                    type: string
-                  id_to_insert:
-                    type: string
-        description: |
-          remove user to blacklist
-        responses:
-          202:
-            description: removed to blacklist correctly
-          303:
-            description: user not removed
+      summary: remove user from blacklist
+      operationId: mib.resource.users.remove_blacklist
+      requestBody:
+        description: remove user in a blacklist
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id_owner
+                - id_to_insert
+              properties:
+                id_owner:
+                  type: string
+                id_to_insert:
+                  type: string
+      description: |
+        remove user to blacklist
+      responses:
+        202:
+          description: removed to blacklist correctly
+        303:
+          description: user not removed
+
   /reportlist:
     post:
       tags: [ User ]
