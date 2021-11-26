@@ -34,6 +34,24 @@ def upgrade():
     sa.Column('lottery_points', sa.Integer()),
     sa.PrimaryKeyConstraint('id')
     )
+
+    op.create_table('filter',
+    sa.Column('user_id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('list', sa.Unicode(length=128), nullable=False)
+    )
+
+    op.create_table('blacklist',
+                    sa.Column('id', sa.Integer(), autoincrement=True),
+                    sa.Column('user_id', sa.Integer(), nullable=False),
+                    sa.Column('blacklisted_user_id', sa.Integer(), nullable=False)
+                    )
+
+    op.create_table('reportlist',
+                    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+                    sa.Column('user_id', sa.Integer(), nullable=False),
+                    sa.Column('reportlisted_user_id', sa.Integer(), nullable=False)
+                    )
+
     # ### end Alembic commands ###
 
 

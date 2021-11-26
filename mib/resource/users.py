@@ -1,11 +1,11 @@
 import json
-from mib.db_model.user_db import User
+from mib.db_model.user_db import User, Filter_list
 from flask import jsonify, request
 import datetime
 from datetime import datetime
-from mib import db
-from datetime import date
 from werkzeug.security import check_password_hash, generate_password_hash
+from mib.db_model.user_db import BlackList, ReportList, User, db
+
 
 def check_none(**kwargs):
     for name, arg in zip(kwargs.keys(), kwargs.values()):
@@ -100,7 +100,7 @@ def create_user():
     user.set_birthday(birthday)
     user.set_location(location)
     user.set_nickname(nickname)
-
+    user.set_isadmin(False)
     # Add user to the db
     db.session.add(user)
     db.session.commit()
@@ -112,13 +112,112 @@ def create_user():
 
 
 def show_users():
+
     post_data = request.get_json()
+
     id_user = post_data.get('id')
-    _users = db.session.query(User).filter(User.is_deleted == False).filter(User.id != id_user)
+    _users = User.query.filter(User.is_deleted == False).filter(User.id != id_user).all()
+
+    #JSON vuoto
+    listobj = []
+
+    for item in _users:
+        listobj.append(item.serialize())
+
     response = {
-        'list_users': _users
+        'list_users': listobj
     }
     return jsonify(response), 201
+
+
+def add_blacklist():
+
+    response = {
+        'message': 'already in blacklist'
+    }
+
+    post_data = request.get_json()
+    owner_id = post_data.get('id_owner')
+    id_to_insert_blacklist = post_data.get('id_to_insert')
+    print("values")
+    print(owner_id)
+    print(id_to_insert_blacklist)
+    new_blackList = BlackList()
+    new_blackList.user_id = int(owner_id)
+    new_blackList.blacklisted_user_id = int(id_to_insert_blacklist)
+
+    _list = db.session.query(BlackList).filter(BlackList.user_id == new_blackList.user_id).filter(
+        BlackList.blacklisted_user_id == new_blackList.blacklisted_user_id)
+    if _list.first() is not None:  # chek if the tupla (current_user.id,user_to_block.id) is just in the db
+        print("blacklist already exist")
+        return jsonify(response), 303
+    else:
+        print("ci arrivo")
+        db.session.add(new_blackList)
+        print ("non ci arrivo")
+        db.session.commit()
+        print("blacklist add")
+        response["message"] = "blacklist add"
+        return jsonify(response), 202
+
+
+def remove_blacklist():
+
+    response = {
+        'message': 'not in blacklist'
+    }
+
+    post_data = request.get_json()
+    owner_id = post_data.get('id_owner')
+    id_to_insert_blacklist = post_data.get('id_to_insert')
+
+    new_blackList = BlackList()
+    new_blackList.user_id = int(owner_id)
+    new_blackList.blacklisted_user_id = int(id_to_insert_blacklist)
+
+    blacklist_id = db.session.query(BlackList).filter(BlackList.user_id == new_blackList.user_id).filter(
+        BlackList.blacklisted_user_id == new_blackList.blacklisted_user_id)
+
+    if blacklist_id.first() is not None:  # chek if the tupla (current_user.id,user_to_block.id) is just in the db
+        db.session.query(BlackList).filter(BlackList.id == blacklist_id.first().id).delete()
+        db.session.commit()
+        print("removed from blacklist")
+        response["message"] = "user removed correctly"
+    else:
+        print("operation not allowed: the user is not in the blacklist")
+        return jsonify(response), 303
+
+    return jsonify(response), 202
+
+
+def report_list():
+
+    response = {
+        'message': 'already in blacklist'
+    }
+
+    post_data = request.get_json()
+    owner_id = post_data.get('id_owner')
+    id_to_insert_blacklist = post_data.get('id_to_insert')
+
+    new_reportlist = ReportList()
+
+    new_reportlist.user_id = owner_id
+    new_reportlist.reportlisted_user_id = id_to_insert_blacklist
+
+    _list = db.session.query(ReportList).filter(ReportList.user_id == new_reportlist.user_id).filter(
+        ReportList.reportlisted_user_id == new_reportlist.reportlisted_user_id)
+    if _list.first() is not None:  # chek if the tupla (current_user.id,user_to_report.id) is just in the db
+        print("user already reported")
+        return jsonify(response), 303
+    else:
+        db.session.add(new_reportlist)
+        db.session.commit()
+
+        print("added to reportlist")
+        response["message"] = "added to reportlist"
+        return jsonify(response), 202
+
 
 def profile_filter(payload):
 

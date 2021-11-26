@@ -69,11 +69,6 @@ paths:
         default:
           description: An error occured during retrieving the user
 
-
-
-
-
-
   /authenticate:
     post:
       tags: [ User ]
@@ -152,6 +147,7 @@ paths:
         203:
           description: redirects to create_user page (if email is already registered, or nickname is not available)
 
+  #Filippo API
   /show_users:
     post:
       tags: [ User ]
@@ -176,7 +172,88 @@ paths:
           description: list retrived correctly
         303:
           description: user list not available
+  /blacklist:
+    post:
+      tags: [ User ]
+      summary: show users
+      operationId: mib.resource.users.add_blacklist
+      requestBody:
+        description: add user in a blacklist
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id_owner
+                - id_to_insert
+              properties:
+                id_owner:
+                  type: string
+                id_to_insert:
+                  type: string
+      description: |
+        add user to blacklist
+      responses:
+        202:
+          description: added to blacklist correctly
+        303:
+          description: user not added
+    delete:
+      tags: [ User ]
+        summary: remove user from blacklist
+        operationId: mib.resource.users.remove_blacklist
+        requestBody:
+          description: remove user in a blacklist
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id_owner
+                  - id_to_insert
+                properties:
+                  id_owner:
+                    type: string
+                  id_to_insert:
+                    type: string
+        description: |
+          remove user to blacklist
+        responses:
+          202:
+            description: removed to blacklist correctly
+          303:
+            description: user not removed
+  /reportlist:
+    post:
+      tags: [ User ]
+      summary: report list
+      operationId: mib.resource.users.report_list
+      requestBody:
+        description: report a user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id_owner
+                - id_to_insert
+              properties:
+                id_owner:
+                  type: string
+                id_to_insert:
+                  type: string
+      description: |
+        report a user to the admin
+      responses:
+        202:
+          description: user reported correctly
+        303:
+          description: user not reported
 
+  #Leonardo API
   /profile_filter:
       get:
         tags: [ User ]
@@ -185,7 +262,6 @@ paths:
         responses:
           201:
             description: show filter
-
   /change_filter:
     post:
       tags: [ User ]
@@ -208,7 +284,6 @@ paths:
       responses:
         203:
           description: filter update successfully, redirects to profile page
-
   /change_info:
     post:
       tags: [ User ]

@@ -5,7 +5,7 @@ class User(db.Model):
     __tablename__ = 'User'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous']
+    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous', 'firstname', 'lastname','is_admin']
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)    # Create unique id for the user
     email = db.Column(db.Unicode(128), nullable=False)                  # Create email for the user
@@ -48,6 +48,8 @@ class User(db.Model):
     def set_nickname(self,nickname):
         self.nickname = nickname
 
+    def set_isadmin(self,is_admin):
+        self.is_admin = is_admin
 
     @property
     def is_authenticated(self):
@@ -71,3 +73,18 @@ class Filter_list(db.Model):
     __tablename__ = 'filter'
     user_id = db.Column(db.Integer, primary_key=True, nullable=False)
     list = db.Column(db.Unicode(128), nullable=True)
+
+
+class BlackList(db.Model):
+    __tablename__ = 'blacklist'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary key, autoincremental
+    user_id = db.Column(db.Integer, nullable=False)  # the user_id who hold the Blacklist
+    blacklisted_user_id = db.Column(db.Integer, nullable=False)  # the user in the blacklist
+
+
+class ReportList(db.Model):
+    __tablename__ = 'reportlist'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary key, autoincremental
+    user_id = db.Column(db.Integer, nullable=False)  # the user_id who hold the reportlist
+    reportlisted_user_id = db.Column(db.Integer, nullable=False)  # the reported user
+
