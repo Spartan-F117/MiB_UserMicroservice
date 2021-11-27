@@ -1,10 +1,9 @@
 import json
-from mib.db_model.user_db import User, Filter_list
 from flask import jsonify, request
 import datetime
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
-from mib.db_model.user_db import BlackList, ReportList, User, db
+from mib.db_model.user_db import BlackList, ReportList, User, db, Filter_list
 
 
 def check_none(**kwargs):

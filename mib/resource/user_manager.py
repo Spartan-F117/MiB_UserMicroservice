@@ -41,6 +41,7 @@ class Manager(object):
             db.session.delete(bean)
         db.session.commit()
 
+
 class UserManager(Manager):
 
     @staticmethod
@@ -49,9 +50,8 @@ class UserManager(Manager):
 
     @staticmethod
     def retrieve_by_id(id_):
-        #Manager.check_none(id=id_)
-        #return User.query.get(id_)
-        return db.session.query(User).filter(User.id==id_).first()
+        Manager.check_none(id=id_)
+        return User.query.get(id_)
 
     @staticmethod
     def retrieve_by_email(email):

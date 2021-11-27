@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import jsonify
 from mib.resource.user_manager import UserManager
 
 
