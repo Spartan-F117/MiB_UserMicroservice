@@ -327,3 +327,28 @@ paths:
           description: info update successfully, redirects to profile page
         202:
           description: info not updated, wrongo password, redirects to profile page
+
+  /delete_user:
+    post:
+      tags: [ User ]
+      summary: delete
+      operationId: mib.resource.users.delete_user
+      requestBody:
+        description: delete a user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+              required:
+                - user_id
+      description: |
+        delete a user
+      responses:
+        201:
+          description: password and user_id are valid
+        301:
+          description: invalid password or user_id, or user not logged.

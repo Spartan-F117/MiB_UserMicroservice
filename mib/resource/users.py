@@ -302,6 +302,29 @@ def change_info():
         return jsonify(response), 202
 
 
+def delete_user():
+    print("userMicroservice - delete_user function ")
+
+    post_data = request.get_json()
+
+    user_id = post_data.get('user_id')
+
+    response = {
+        'response': 'user not deleted'
+    }
+
+    response_code = 301
+
+    user_logged = User.query.filter(User.is_active == True).filter(User.id == user_id).first()
+    user_logged.is_delete = True
+    db.session.commit()
+
+    if user_logged.is_delete == True:
+        response_code = 201
+        response["response"] = "user deleted"
+
+    return jsonify(response), response_code
+
 
 
 
