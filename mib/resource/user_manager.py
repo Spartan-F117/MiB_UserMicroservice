@@ -49,8 +49,9 @@ class UserManager(Manager):
 
     @staticmethod
     def retrieve_by_id(id_):
-        Manager.check_none(id=id_)
-        return User.query.get(id_)
+        #Manager.check_none(id=id_)
+        #return User.query.get(id_)
+        return db.session.query(User).filter(User.id==id_).first()
 
     @staticmethod
     def retrieve_by_email(email):

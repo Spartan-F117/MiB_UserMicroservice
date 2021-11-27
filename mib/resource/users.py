@@ -28,7 +28,7 @@ def login(payload):
     print("User:"+payload["email"])
 
     check_none(email=payload['email'])
-    user_q = User.query.filter(User.email == str(payload['email'])).first()
+    user_q = User.query.filter(User.email == str(payload['email'])).filter(User.is_deleted == False).first()
 
     # create response template
     response = {
@@ -315,11 +315,11 @@ def delete_user():
 
     response_code = 301
 
-    user_logged = User.query.filter(User.is_active == True).filter(User.id == user_id).first()
-    user_logged.is_delete = True
+    user_logged = User.query.filter(User.id == user_id).first()
+    user_logged.is_deleted = True
     db.session.commit()
 
-    if user_logged.is_delete == True:
+    if user_logged.is_deleted == True:
         response_code = 201
         response["response"] = "user deleted"
 

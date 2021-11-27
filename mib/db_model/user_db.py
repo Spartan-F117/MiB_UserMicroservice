@@ -5,7 +5,19 @@ class User(db.Model):
     __tablename__ = 'User'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'email', 'firstname', 'lastname', 'nickname', 'date_of_birth', 'location', 'is_active', 'authenticated', 'is_anonymous','is_admin']
+    SERIALIZE_LIST = ['id',
+                      'email',
+                      'firstname',
+                      'lastname',
+                      'date_of_birth',
+                      'location',
+                      'nickname',
+                      'is_active',
+                      'is_admin',
+                      'is_deleted',
+                      'is_anonymous',
+                      'authenticated',
+                      'lottery_points']
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)    # Create unique id for the user
     email = db.Column(db.Unicode(128), nullable=False)                  # Create email for the user
@@ -20,7 +32,7 @@ class User(db.Model):
     is_deleted = db.Column(db.Boolean, default=False)                   # Checks that the user is deleted or not (True if deleted)
     is_anonymous = False                                                # Checks if user is logged in or not
     authenticated = db.Column(db.Boolean, default=True)
-    lottery_points = db.Column(db.Integer, default = 0)                 # point winned partecipating to the monthly lottery
+    lottery_points = db.Column(db.Integer, default=0)                 # point winned partecipating to the monthly lottery
 
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)
@@ -69,13 +81,16 @@ class User(db.Model):
     def serialize(self):
         return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
 
+
 class Filter_list(db.Model):
+
     __tablename__ = 'filter'
     user_id = db.Column(db.Integer, primary_key=True, nullable=False)
     list = db.Column(db.Unicode(128), nullable=True)
 
 
 class BlackList(db.Model):
+
     __tablename__ = 'blacklist'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary key, autoincremental
     user_id = db.Column(db.Integer, nullable=False)  # the user_id who hold the Blacklist
@@ -83,6 +98,7 @@ class BlackList(db.Model):
 
 
 class ReportList(db.Model):
+
     __tablename__ = 'reportlist'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary key, autoincremental
     user_id = db.Column(db.Integer, nullable=False)  # the user_id who hold the reportlist
