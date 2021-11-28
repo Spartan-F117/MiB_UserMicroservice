@@ -68,6 +68,50 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
+  
+  /blacklist_info/{sender_id}{receiver_id}:
+    get:
+      tags: [ User ]
+      description: Get blacklist info
+      operationId: mib.resource.users.blacklist_info
+      parameters:
+        - name: sender_id
+          description: Sender Unique id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: receiver_id
+          description: Receiver Unique id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return yes
+        202:
+          description: blacklist not found
+
+  /user_nickname/{user_nickname}:
+    get:
+      tags: [ User ]
+      description: Get a user by its nickname
+      operationId: mib.resource.util_fun.get_user_by_nickname
+      parameters:
+        - name: user_nickname
+          description: User Unique nickname
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
 
   /authenticate:
     post:
