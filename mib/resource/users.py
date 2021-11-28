@@ -158,6 +158,12 @@ def add_blacklist():
         response["message"] = "blacklist add"
         return jsonify(response), 202
 
+def blacklist_info(sender_id, receiver_id):
+    result = db.session.query(BlackList).filter(BlackList.user_id == receiver_id).filter(BlackList.blacklisted_user_id == sender_id).first()
+    if result is not None:
+        return 200
+    else:
+        return 202
 
 def remove_blacklist():
 

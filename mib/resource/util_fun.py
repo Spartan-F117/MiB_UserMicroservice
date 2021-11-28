@@ -30,6 +30,15 @@ def get_user_by_email(user_email):
 
     return jsonify(user.serialize()), 200
 
+def get_user_by_nickname(user_nickname):
+    
+    user = UserManager.retrieve_by_nickname(user_nickname)
+    if user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+
+    return jsonify(user.serialize()), 200
+
 
 def delete_user(user_id):
     """
