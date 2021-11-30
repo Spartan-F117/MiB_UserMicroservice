@@ -1,7 +1,9 @@
 import json
+import re
 from flask import jsonify, request
 import datetime
 from datetime import datetime
+from flask.wrappers import Response
 from werkzeug.security import check_password_hash, generate_password_hash
 from mib.db_model.user_db import BlackList, ReportList, User, db, Filter_list
 
@@ -156,15 +158,23 @@ def add_blacklist():
         print ("non ci arrivo")
         db.session.commit()
         print("blacklist add")
+        #print(db.session.query(BlackList).filter(BlackList.user_id == owner_id).filter(BlackList.blacklisted_user_id == id_to_insert_blacklist).first())
         response["message"] = "blacklist add"
         return jsonify(response), 202
 
 def blacklist_info(sender_id, receiver_id):
+    print(sender_id)
+    print(receiver_id)
+    response = {
+        'message': 'blacklist is present'
+    }
     result = db.session.query(BlackList).filter(BlackList.user_id == receiver_id).filter(BlackList.blacklisted_user_id == sender_id).first()
+    print(result)
     if result is not None:
-        return 200
+        return jsonify(response), 200
     else:
-        return 202
+        response['message']='blacklist is not present'
+        return jsonify(response), 202
 
 def remove_blacklist():
 

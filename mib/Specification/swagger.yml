@@ -69,7 +69,7 @@ paths:
         default:
           description: An error occured during retrieving the user
   
-  /blacklist_info/{sender_id}{receiver_id}:
+  /blacklist_info/{sender_id}/{receiver_id}:
     get:
       tags: [ User ]
       description: Get blacklist info
