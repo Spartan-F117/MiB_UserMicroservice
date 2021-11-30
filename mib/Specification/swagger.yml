@@ -396,3 +396,24 @@ paths:
           description: password and user_id are valid
         301:
           description: invalid password or user_id, or user not logged.
+  /decrease_lottery_points/{user_id}:
+    get:
+      tags: [ User ]
+      description: decrease user lottery points
+      operationId: mib.resource.users.decrease_lottery_points
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: decrease ok
+        404:
+          description: decrease no
+        default:
+          description: An error occured during retrieving the user
+

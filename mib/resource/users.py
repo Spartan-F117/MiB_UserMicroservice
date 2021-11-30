@@ -5,6 +5,7 @@ from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 from mib.db_model.user_db import BlackList, ReportList, User, db, Filter_list
 
+POINT_NECESSARY=12
 
 def check_none(**kwargs):
     for name, arg in zip(kwargs.keys(), kwargs.values()):
@@ -330,7 +331,12 @@ def delete_user():
 
     return jsonify(response), response_code
 
-
+def decrease_lottery_points(user_id):
+    user = User.query.filter(User.id == user_id).first()
+    user.lottery_points -= POINT_NECESSARY
+    db.session.commit()
+    return 200
+    
 
 
 
