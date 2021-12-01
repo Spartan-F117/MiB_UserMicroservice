@@ -31,6 +31,7 @@ def login(payload):
 
     check_none(email=payload['email'])
     user_q = User.query.filter(User.email == str(payload['email'])).filter(User.is_deleted == False).first()
+
     # create response template
     response = {
         'authentication': 'failure',
@@ -54,7 +55,7 @@ def logout(user_email):
     user_q = User.query.filter(User.email == user_email).first()
     user_q.is_active = False
     db.session.commit()
-    
+
     return json.dumps({"body":"logout"}),200
 
 

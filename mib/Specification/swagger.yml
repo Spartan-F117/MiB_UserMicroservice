@@ -48,7 +48,26 @@ paths:
           description: User not found
         default:
           description: An error occured during the deletion the user
-
+  /increment_point_user/{user_id}:
+    get:
+      tags: [ User ]
+      description: increment lottery point of the user
+      operationId: mib.resource.util_fun.increment_point_user
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
   /user_email/{user_email}:
     get:
       tags: [ User ]

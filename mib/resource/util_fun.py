@@ -1,5 +1,6 @@
 from flask import jsonify
 from mib.resource.user_manager import UserManager
+from mib.db_model.user_db import db, User
 
 
 
@@ -10,6 +11,29 @@ def get_user(user_id):
     :return: json response
     """
     user = UserManager.retrieve_by_id(user_id)
+    if user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+
+    return jsonify(user.serialize()), 200
+
+def increment_point_user(user_id):
+    """
+    Get a user by its current id and increment lottery point of the user
+    :param user_id: user it
+    :return: json response
+    """
+    # user_winner = db.session.query(User).filter(User.id == user_id)
+    # user_winner.first().lottery_points += 1
+    # db.session.commit()
+
+    user = UserManager.retrieve_by_id(user_id)
+    user.lottery_points += 1
+    db.session.commit()
+
+    user2 = UserManager.retrieve_by_id(user_id)
+    print("punti lotteria dell'utente vincitore:")
+    print(user2.lottery_points)
     if user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404

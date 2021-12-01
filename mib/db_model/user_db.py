@@ -93,8 +93,8 @@ class BlackList(db.Model):
 
     __tablename__ = 'blacklist'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)  # primary key, autoincremental
-    user_id = db.Column(db.Integer, nullable=False)  # the user_id who hold the Blacklist
-    blacklisted_user_id = db.Column(db.Integer, nullable=False)  # the user in the blacklist
+    user_id = db.Column(db.Integer)  # the user_id who hold the Blacklist
+    blacklisted_user_id = db.Column(db.Integer)  # the user in the blacklist
 
     def __init__(self, *args, **kw):
         super(BlackList, self).__init__(*args, **kw)
