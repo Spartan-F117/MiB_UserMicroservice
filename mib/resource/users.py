@@ -31,7 +31,6 @@ def login(payload):
 
     check_none(email=payload['email'])
     user_q = User.query.filter(User.email == str(payload['email'])).filter(User.is_deleted == False).first()
-
     # create response template
     response = {
         'authentication': 'failure',
@@ -43,13 +42,20 @@ def login(payload):
     if user_q and user_q.authenticate(payload['password']):
         response['authentication'] = 'success'
         response['user'] = user_q.serialize()
+        user_q.is_active = True
+        db.session.commit()
         response_code = 200
 
     return jsonify(response), response_code
 
 
-def logout():
-    return json.dumps({"body":"logout"})
+def logout(user_email):
+
+    user_q = User.query.filter(User.email == user_email).first()
+    user_q.is_active = False
+    db.session.commit()
+    
+    return json.dumps({"body":"logout"}),200
 
 
 def create_user():
@@ -138,18 +144,18 @@ def add_blacklist():
     }
 
     post_data = request.get_json()
-    owner_id = post_data.get('id_owner')
-    id_to_insert_blacklist = post_data.get('id_to_insert')
-    print("values")
-    print(owner_id)
-    print(id_to_insert_blacklist)
-    new_blackList = BlackList()
-    new_blackList.user_id = int(owner_id)
-    new_blackList.blacklisted_user_id = int(id_to_insert_blacklist)
 
-    _list = db.session.query(BlackList).filter(BlackList.user_id == new_blackList.user_id).filter(
-        BlackList.blacklisted_user_id == new_blackList.blacklisted_user_id)
-    if _list.first() is not None:  # chek if the tupla (current_user.id,user_to_block.id) is just in the db
+    new_blackList = BlackList()
+    new_blackList.user_id = post_data.get('id_owner')
+    new_blackList.blacklisted_user_id = post_data.get('id_to_insert')
+    new_blackList.id=1
+
+    print(new_blackList.user_id)
+    print(new_blackList.blacklisted_user_id)
+
+    _list = db.session.query(BlackList).filter(BlackList.user_id == post_data.get('id_owner')).filter(
+        BlackList.blacklisted_user_id == post_data.get('id_to_insert')).first()
+    if _list is not None:  # chek if the tupla (current_user.id,user_to_block.id) is just in the db
         print("blacklist already exist")
         return jsonify(response), 303
     else:
@@ -158,7 +164,8 @@ def add_blacklist():
         print ("non ci arrivo")
         db.session.commit()
         print("blacklist add")
-        #print(db.session.query(BlackList).filter(BlackList.user_id == owner_id).filter(BlackList.blacklisted_user_id == id_to_insert_blacklist).first())
+        print(db.session.query(BlackList).filter(BlackList.user_id == post_data.get('id_owner')).filter(
+        BlackList.blacklisted_user_id == post_data.get('id_to_insert')).first())
         response["message"] = "blacklist add"
         return jsonify(response), 202
 
@@ -208,17 +215,18 @@ def remove_blacklist():
 def report_list():
 
     response = {
-        'message': 'already in blacklist'
+        'message': 'already in reportlist'
     }
 
     post_data = request.get_json()
     owner_id = post_data.get('id_owner')
-    id_to_insert_blacklist = post_data.get('id_to_insert')
+    id_to_insert_reportlist = post_data.get('id_to_insert')
 
     new_reportlist = ReportList()
 
     new_reportlist.user_id = owner_id
-    new_reportlist.reportlisted_user_id = id_to_insert_blacklist
+    new_reportlist.reportlisted_user_id = id_to_insert_reportlist
+    new_reportlist.id=1
 
     _list = db.session.query(ReportList).filter(ReportList.user_id == new_reportlist.user_id).filter(
         ReportList.reportlisted_user_id == new_reportlist.reportlisted_user_id)
@@ -228,7 +236,6 @@ def report_list():
     else:
         db.session.add(new_reportlist)
         db.session.commit()
-
         print("added to reportlist")
         response["message"] = "added to reportlist"
         return jsonify(response), 202

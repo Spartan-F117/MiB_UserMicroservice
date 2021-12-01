@@ -145,6 +145,22 @@ paths:
         '201':
           description: invalid credential
 
+  /logout/{user_email}:
+    get:
+      tags: [ User ]
+      description: logout a user by its email
+      operationId: mib.resource.users.logout
+      parameters:
+        - name: user_email
+          description: User Unique email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: logout ok
+
   /create_user:
     post:
       tags: [ User ]

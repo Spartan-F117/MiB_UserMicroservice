@@ -92,10 +92,13 @@ class Filter_list(db.Model):
 class BlackList(db.Model):
 
     __tablename__ = 'blacklist'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary key, autoincremental
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)  # primary key, autoincremental
     user_id = db.Column(db.Integer, nullable=False)  # the user_id who hold the Blacklist
     blacklisted_user_id = db.Column(db.Integer, nullable=False)  # the user in the blacklist
 
+    def __init__(self, *args, **kw):
+        super(BlackList, self).__init__(*args, **kw)
+        
 
 class ReportList(db.Model):
 
@@ -103,4 +106,7 @@ class ReportList(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary key, autoincremental
     user_id = db.Column(db.Integer, nullable=False)  # the user_id who hold the reportlist
     reportlisted_user_id = db.Column(db.Integer, nullable=False)  # the reported user
+
+    def __init__(self, *args, **kw):
+        super(ReportList, self).__init__(*args, **kw)
 
