@@ -7,7 +7,7 @@ from flask.wrappers import Response
 from werkzeug.security import check_password_hash, generate_password_hash
 from mib.db_model.user_db import BlackList, ReportList, User, db, Filter_list
 
-POINT_NECESSARY=12
+POINT_NECESSARY=1
 
 def check_none(**kwargs):
     for name, arg in zip(kwargs.keys(), kwargs.values()):
