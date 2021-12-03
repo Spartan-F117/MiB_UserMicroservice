@@ -5,7 +5,6 @@ from flask.wrappers import Response
 
 
 
-
 class ViewTest(unittest.TestCase):
     """
     This class should be implemented by
