@@ -1,4 +1,6 @@
 from faker import Faker
+from flask import app
+from flask import Flask, current_app
 
 from dao_test import DaoTest
 
@@ -36,4 +38,10 @@ class TestUserManager(DaoTest):
         assert retrieved_user is not None
 
     def test_util(self):
-        self.user_utile.get_user('1')
+
+        app = Flask(__name__)
+        with app.app_context():
+            self.user_utile.get_user('1')
+            self.user_utile.get_user_by_email('example@email.it')
+            self.user_utile.get_user_by_nickname('nick1')
+            self.user_utile.increment_point_user('1')
