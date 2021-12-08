@@ -9,12 +9,13 @@ from mib.db_model.user_db import BlackList, ReportList, User, db, Filter_list
 
 POINT_NECESSARY=1
 
+#function that raises and acception if nothing is put as input
 def check_none(**kwargs):
     for name, arg in zip(kwargs.keys(), kwargs.values()):
         if arg is None:
             raise ValueError('You can\'t set %s argument to None' % name)
 
-
+#function that checks if the date is correct or not
 def validate_date(date_text):
     try:
         print(date_text)
@@ -24,7 +25,7 @@ def validate_date(date_text):
     except ValueError:
         return False
 
-
+#function that check the couple (email, password) is correct 
 def login(payload):
     print("userMicroservice - login function ")
     print("User:"+payload["email"])
@@ -49,7 +50,7 @@ def login(payload):
 
     return jsonify(response), response_code
 
-
+#functions that does the logout of a user
 def logout(user_email):
 
     user_q = User.query.filter(User.email == user_email).first()
@@ -58,10 +59,11 @@ def logout(user_email):
 
     return json.dumps({"body":"logout"}),200
 
-
+#function that creates a new user
 def create_user():
     print("userMicroservice - create_user function ")
 
+    #take the info from the payload
     post_data = request.get_json()
     email = post_data.get('email')
     password = post_data.get('password')
@@ -101,6 +103,7 @@ def create_user():
         response["response"] = "born in the future"
         return jsonify(response), 202
 
+    #create the user and put it into the db
     user = User()
     user.set_email(email)
     user.set_password(password)
@@ -119,7 +122,7 @@ def create_user():
 
     return jsonify(response), 201
 
-
+#shows the user list
 def show_users():
 
     post_data = request.get_json()
@@ -130,6 +133,7 @@ def show_users():
     #JSON vuoto
     listobj = []
 
+    #serialize the _user
     for item in _users:
         listobj.append(item.serialize())
 
@@ -138,6 +142,7 @@ def show_users():
     }
     return jsonify(response), 201
 
+#function that adds a user into the blacklist of another one
 def add_blacklist():
 
     response = {
@@ -146,6 +151,7 @@ def add_blacklist():
 
     post_data = request.get_json()
 
+    #take the user to block and the owner from the payload
     new_blackList = BlackList()
     new_blackList.user_id = post_data.get('id_owner')
     new_blackList.blacklisted_user_id = post_data.get('id_to_insert')
@@ -170,6 +176,7 @@ def add_blacklist():
         response["message"] = "blacklist add"
         return jsonify(response), 202
 
+#function that says if a couple (received_id=owner,sender_id=user_blocked) is int the db
 def blacklist_info(sender_id, receiver_id):
     print(sender_id)
     print(receiver_id)
@@ -184,12 +191,14 @@ def blacklist_info(sender_id, receiver_id):
         response['message']='blacklist is not present'
         return jsonify(response), 202
 
+#function that deletes from the db a blacklist entry
 def remove_blacklist():
 
     response = {
         'message': 'not in blacklist'
     }
 
+    #take the owner and the user blocked from the payload
     post_data = request.get_json()
     owner_id = post_data.get('id_owner')
     id_to_insert_blacklist = post_data.get('id_to_insert')
@@ -212,13 +221,14 @@ def remove_blacklist():
 
     return jsonify(response), 202
 
-
+#function that inserts a user into the reportlist
 def report_list():
 
     response = {
         'message': 'already in reportlist'
     }
 
+    #take the user to report into the payload
     post_data = request.get_json()
     owner_id = post_data.get('id_owner')
     id_to_insert_reportlist = post_data.get('id_to_insert')
@@ -241,7 +251,7 @@ def report_list():
         response["message"] = "added to reportlist"
         return jsonify(response), 202
 
-
+#function that retrieves the filter of a user
 def profile_filter(user_id: int):
 
     post_data = request.get_json()
@@ -255,17 +265,18 @@ def profile_filter(user_id: int):
         response['filter'] = user_filter_list.first().list
     return jsonify(response), 201
 
-
+#function that changes the filter of a user
 def change_filter():
 
     post_data = request.get_json()
 
+    #take the user and the filter from the payload
     print("change filter branch")
     new_filter = Filter_list()
     new_filter.list = post_data.get('filter')
     new_filter.user_id = post_data.get('user_id')
     user_filter_list = db.session.query(Filter_list).filter(Filter_list.user_id==post_data.get('user_id'))
-    if user_filter_list.first() is not None:
+    if user_filter_list.first() is not None: #check there is just a filter or not
         db.session.query(Filter_list).filter(Filter_list.user_id==post_data.get('user_id')).delete()
         db.session.add(new_filter)
     else:
@@ -277,11 +288,12 @@ def change_filter():
     }
     return jsonify(response), 203
 
-
+#function that changes user's info
 def change_info():
 
     post_data = request.get_json()
 
+    #take the new_info and the user from payload
     print("change info branch")
     user_q = User.query.filter(User.id == post_data.get('user_id')).first()
     if check_password_hash(user_q.password, post_data.get('old_password')) : #check if the password that is put in the form is corrected
@@ -325,12 +337,13 @@ def change_info():
             }
         return jsonify(response), 202
 
-
+#function that deletes a user
 def delete_user():
     print("userMicroservice - delete_user function ")
 
     post_data = request.get_json()
 
+    #take the user from payload
     user_id = post_data.get('user_id')
 
     response = {
@@ -340,15 +353,16 @@ def delete_user():
     response_code = 301
 
     user_logged = User.query.filter(User.id == user_id).first()
-    user_logged.is_deleted = True
+    user_logged.is_deleted = True #the user is marked as deleted
     db.session.commit()
 
-    if user_logged.is_deleted == True:
+    if user_logged.is_deleted == True: #check if the deletion was done
         response_code = 201
         response["response"] = "user deleted"
 
     return jsonify(response), response_code
 
+#function that decreases the lottery_points of a user
 def decrease_lottery_points(user_id):
     user = User.query.filter(User.id == user_id).first()
     user.lottery_points -= POINT_NECESSARY

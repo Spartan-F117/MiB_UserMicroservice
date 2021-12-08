@@ -3,7 +3,7 @@ from mib.resource.user_manager import UserManager
 from mib.db_model.user_db import db, User
 
 
-
+#function that retrieves a user by his id
 def get_user(user_id):
     """
     Get a user by its current id.
@@ -17,6 +17,7 @@ def get_user(user_id):
 
     return jsonify(user.serialize()), 200
 
+#function that increments the user's lottery_points
 def increment_point_user(user_id):
     """
     Get a user by its current id and increment lottery point of the user
@@ -40,7 +41,7 @@ def increment_point_user(user_id):
 
     return jsonify(user.serialize()), 200
 
-
+#function that retrieves a user by his email
 def get_user_by_email(user_email):
     """
     Get a user by its current email.
@@ -54,6 +55,7 @@ def get_user_by_email(user_email):
 
     return jsonify(user.serialize()), 200
 
+#function that retrieves a user by his nickname
 def get_user_by_nickname(user_nickname):
     
     user = UserManager.retrieve_by_nickname(user_nickname)
@@ -63,7 +65,7 @@ def get_user_by_nickname(user_nickname):
 
     return jsonify(user.serialize()), 200
 
-
+#function thata deletes a user
 def delete_user(user_id):
     """
     Delete the user with id = user_id.
