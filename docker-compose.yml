@@ -23,8 +23,6 @@ services:
       build:
         context: .
         dockerfile: Dockerfile
-    ports:
-     - "5002:5002"
     env_file:
       - env_file
     environment:
@@ -32,11 +30,9 @@ services:
     depends_on:
       - db
       - migrations
-    volumes:
-      - .:/app
 
   migrations:
-     this service is used to apply migrations on db
+     #this service is used to apply migrations on db
     <<: *mib_user
     command: flask db upgrade
     env_file:
